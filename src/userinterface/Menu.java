@@ -3,6 +3,7 @@ package userinterface;
 import services.CurrencyConverter;
 import services.HistoryService;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
@@ -18,7 +19,7 @@ public class Menu {
             welcome();
             showMenu();
 
-            System.out.println("Escolha uma opção válida: ");
+            System.out.print("Escolha uma opção válida: ");
             option = input.nextInt();
 
             handleOption(option);
@@ -68,16 +69,20 @@ public class Menu {
 
     private void convert(String from, String to) {
 
-        System.out.print("Digite o valor em " + from + ": ");
-        double amount = input.nextDouble();
+        try {
+            System.out.print("Digite o valor em " + from + ": ");
+            double amount = input.nextDouble();
 
-        double result = converter.convert(from, to, amount);
+            double result = converter.convert(from, to, amount);
 
-        System.out.printf("%.2f %s = %.2f %s\n",  amount, from, result, to);
+            System.out.printf("%.2f %s = %.2f %s\n",  amount, from, result, to);
 
-        String record = amount + " " + from + " → " + result + " " + to;
+            String record = amount + " " + from + " → " + result + " " + to;
 
-        history.save(record);
+            history.save(record);
+        } catch (InputMismatchException e) {
+            System.out.println("Erro: valor inválido. Use vírgula para decimais.");
+        }
     }
 
     private void clearScreen() {
